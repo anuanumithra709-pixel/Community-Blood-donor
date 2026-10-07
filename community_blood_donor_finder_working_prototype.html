@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Blood Donor Finder</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}
+header{background:#9f1239;color:#fff;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}
+header h1{margin:0;font-size:24px}.badge{background:#fff;color:#9f1239;padding:7px 12px;border-radius:20px;font-weight:bold}
+nav{background:#fff;padding:10px 6%;display:flex;gap:8px;flex-wrap:wrap;box-shadow:0 2px 8px #0001}
+nav button,.primary{border:0;padding:11px 16px;border-radius:8px;cursor:pointer;background:#9f1239;color:#fff;font-weight:bold}
+nav button{background:#eee;color:#333}
+.container{max-width:1100px;margin:25px auto;padding:0 18px}
+.hero{background:linear-gradient(135deg,#9f1239,#be123c);color:white;border-radius:18px;padding:30px}
+.hero h2{font-size:34px;margin:0 0 10px}.hero p{max-width:720px;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:20px}
+.card{background:#fff;border-radius:14px;padding:20px;box-shadow:0 4px 18px #0000000d}
+.card h3{margin-top:0}.stat{font-size:30px;font-weight:bold;color:#9f1239}
+label{display:block;margin:10px 0 5px;font-weight:bold}
+input,select,textarea{width:100%;padding:11px;border:1px solid #ccd3df;border-radius:8px}
+textarea{min-height:90px;resize:vertical}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+th,td{padding:11px;border-bottom:1px solid #eee;text-align:left}th{background:#f1f5f9}
+.status{padding:5px 9px;border-radius:15px;font-size:12px;font-weight:bold}
+.available{background:#dcfce7;color:#166534}.busy{background:#fee2e2;color:#991b1b}
+.notice{padding:12px;border-radius:8px;background:#fff7ed;color:#9a3412;margin:12px 0}
+.success{padding:12px;border-radius:8px;background:#ecfdf5;color:#166534;margin:12px 0}
+.hidden{display:none}.match{border-left:5px solid #9f1239;padding:14px;background:#fff;margin:10px 0;border-radius:8px}
+footer{text-align:center;padding:30px;color:#64748b}.small{font-size:13px;color:#64748b}
+.danger{color:#b91c1c}
+button:focus,input:focus,select:focus,textarea:focus{outline:2px solid #fb7185;outline-offset:1px}
+@media(max-width:600px){header{gap:10px;align-items:flex-start;flex-direction:column}.hero h2{font-size:27px}}
+</style>
+</head>
+<body>
+<header>
+  <h1>🩸 Community Blood Donor Finder</h1>
+  <span class="badge">Working Prototype</span>
+</header>
+
+<nav>
+  <button onclick="show('home')">Home</button>
+  <button onclick="show('register')">Donor Registration</button>
+  <button onclick="show('request')">Emergency Request</button>
+  <button onclick="show('matches')">Nearby Matches</button>
+  <button onclick="show('alerts')">Donor Alerts</button>
+  <button onclick="show('admin')">Admin Dashboard</button>
+</nav>
+
+<div class="container">
+<section id="home">
+  <div class="hero">
+    <h2>Find potential blood donors faster.</h2>
+    <p>A simple coordination prototype connecting blood requests with registered voluntary donors using blood group, availability and approximate location.</p>
+    <button class="primary" onclick="show('request')">Create Emergency Request</button>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="stat" id="donorCount">0</div><p>Registered donors</p></div>
+    <div class="card"><div class="stat" id="requestCount">0</div><p>Active requests</p></div>
+    <div class="card"><div class="stat">24/7</div><p>Coordination concept</p></div>
+  </div>
+  <div class="card" style="margin-top:20px">
+    <h3>How it works</h3>
+    <p><b>1.</b> Register donor → <b>2.</b> Create request → <b>3.</b> Match blood group → <b>4.</b> Check availability → <b>5.</b> Show potential matches → <b>6.</b> Simulate donor alert → <b>7.</b> Hospital coordination</p>
+  </div>
+  <div class="notice">This is an educational coordination prototype. It does not make medical decisions, perform donor eligibility screening, or confirm transfusion compatibility.</div>
+</section>
+
+<section id="register" class="hidden">
+  <div class="card">
+    <h2>Donor Registration</h2>
+    <div class="formgrid">
+      <div><label>Name</label><input id="dName" placeholder="Donor name"></div>
+      <div><label>Blood Group</label>
+        <select id="dBlood"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+      </div>
+      <div><label>Location</label><input id="dLocation" placeholder="Area / City"></div>
+      <div><label>Availability</label><select id="dAvail"><option>Available</option><option>Busy</option></select></div>
+    </div>
+    <button class="primary" onclick="registerDonor()">Register Donor</button>
+    <p class="small">Prototype only. Real deployment needs secure authentication, consent and verified healthcare workflows.</p>
+  </div>
+</section>
+
+<section id="request" class="hidden">
+  <div class="card">
+    <h2>Emergency Blood Request</h2>
+    <div class="formgrid">
+      <div><label>Required Blood Group</label>
+        <select id="rBlood"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select>
+      </div>
+      <div><label>Hospital / Request Location</label><input id="rLocation" placeholder="Area / City"></div>
+      <div><label>Units Required</label><input id="rUnits" type="number" min="1" value="1"></div>
+    </div>
+    <label>Additional Details</label>
+    <textarea id="rDetails" placeholder="Enter necessary request details"></textarea>
+    <button class="primary" onclick="createRequest()">Create Request & Find Matches</button>
+    <div class="notice">Medical screening, donor eligibility and transfusion compatibility must be handled by qualified healthcare professionals or blood-bank staff.</div>
+  </div>
+</section>
+
+<section id="matches" class="hidden">
+  <div class="card"><h2>Nearby Potential Matches</h2><div id="matchList"></div></div>
+</section>
+
+<section id="alerts" class="hidden">
+  <div class="card">
+    <h2>Donor Alerts</h2>
+    <div id="alertList"><div class="match"><b>No alerts yet.</b><br>Potential match notifications will appear here after a request is created.</div></div>
+  </div>
+</section>
+
+<section id="admin" class="hidden">
+  <div class="card">
+    <h2>Admin Dashboard</h2>
+    <div class="grid">
+      <div><div class="stat" id="adminDonors">0</div><p>Donors</p></div>
+      <div><div class="stat" id="adminRequests">0</div><p>Requests</p></div>
+      <div><div class="stat">Secure</div><p>Access-control concept</p></div>
+    </div>
+    <h3>Donor Records</h3>
+    <table>
+      <thead><tr><th>Name</th><th>Blood</th><th>Location</th><th>Status</th></tr></thead>
+      <tbody id="donorTable"></tbody>
+    </table>
+  </div>
+</section>
+</div>
+
+<footer>Community Blood Donor Finder — educational prototype, not a medical decision system.</footer>
+
+<script>
+let donors=[
+  {name:"Arun",blood:"O+",location:"Coimbatore",avail:"Available"},
+  {name:"Rahul",blood:"O+",location:"Coimbatore",avail:"Busy"},
+  {name:"Karthik",blood:"A+",location:"Pollachi",avail:"Available"}
+];
+let requests=1;
+
+function show(id){
+  document.querySelectorAll("section").forEach(s=>s.classList.add("hidden"));
+  document.getElementById(id).classList.remove("hidden");
+  if(id==="matches"||id==="admin") render();
+}
+
+function registerDonor(){
+  const name=document.getElementById("dName").value.trim();
+  if(!name){alert("Please enter donor name.");return;}
+  donors.push({
+    name:name,
+    blood:document.getElementById("dBlood").value,
+    location:document.getElementById("dLocation").value.trim()||"Not specified",
+    avail:document.getElementById("dAvail").value
+  });
+  alert("Donor registered successfully in this prototype.");
+  document.getElementById("dName").value="";
+  document.getElementById("dLocation").value="";
+  render(); show("admin");
+}
+
+function createRequest(){
+  const blood=document.getElementById("rBlood").value;
+  const loc=document.getElementById("rLocation").value.trim()||"Not specified";
+  const units=Math.max(1,Number(document.getElementById("rUnits").value)||1);
+  const matches=donors.filter(d=>d.blood===blood && d.avail==="Available");
+  requests++;
+
+  document.getElementById("matchList").innerHTML = matches.length
+    ? matches.map(d=>`<div class="match"><b>${escapeHtml(d.name)}</b> — ${escapeHtml(d.blood)}<br>Location: ${escapeHtml(d.location)}<br><span class="status available">Available</span><br><span class="small">Priority: blood group + availability + approximate location | Units requested: ${units}</span></div>`).join("")
+    : "<div class='notice'>No currently available potential donor found for this blood group.</div>";
+
+  document.getElementById("alertList").innerHTML = matches.length
+    ? matches.map(d=>`<div class="match"><b>Alert simulated for ${escapeHtml(d.name)}</b><br>Potential ${escapeHtml(blood)} request near ${escapeHtml(loc)}.</div>`).join("")
+    : "<div class='notice'>No donor alerts generated.</div>";
+
+  render(); show("matches");
+}
+
+function escapeHtml(value){
+  return String(value).replace(/[&<>"']/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[ch]));
+}
+
+function render(){
+  document.getElementById("donorCount").textContent=donors.length;
+  document.getElementById("requestCount").textContent=requests;
+  document.getElementById("adminDonors").textContent=donors.length;
+  document.getElementById("adminRequests").textContent=requests;
+  document.getElementById("donorTable").innerHTML=donors.map(d=>
+    `<tr><td>${escapeHtml(d.name)}</td><td>${escapeHtml(d.blood)}</td><td>${escapeHtml(d.location)}</td><td><span class="status ${d.avail==="Available"?"available":"busy"}">${escapeHtml(d.avail)}</span></td></tr>`
+  ).join("");
+}
+
+render();
+</script>
+</body>
+</html>
